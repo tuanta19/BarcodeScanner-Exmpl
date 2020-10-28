@@ -14,6 +14,7 @@ import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.journeyapps.barcodescanner.ViewfinderView;
 
+import java.lang.reflect.Field;
 import java.util.Random;
 
 public class CaptureActivity extends Activity implements DecoratedBarcodeView.TorchListener{
@@ -48,6 +49,26 @@ public class CaptureActivity extends Activity implements DecoratedBarcodeView.To
 
         changeMaskColor(null);
         changeLaserVisibility(true);
+
+        disableLaser();
+    }
+
+    private void disableLaser() {
+
+        ViewfinderView viewFinder = barcodeScannerView.getViewFinder();
+        Field scannerAlphaField = null;
+
+        try {
+            scannerAlphaField = viewFinder.getClass().getDeclaredField("SCANNER_ALPHA");
+            scannerAlphaField.setAccessible(true);
+            scannerAlphaField.set(viewFinder, new int[1]);
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
